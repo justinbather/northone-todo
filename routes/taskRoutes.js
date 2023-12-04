@@ -1,11 +1,12 @@
 const express = require('express')
+const { getAllTasks, createTask, updateTask } = require('../controllers/tasks')
 
 
 router = express.Router()
 
 
-router.get('/', (_req, res) => {
-  res.status(200).json("tasks")
-})
+router.get('/', getAllTasks)
+router.post('/', createTask)
+router.patch('/:id', updateTask)
 
 module.exports = router

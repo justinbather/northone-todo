@@ -1,0 +1,47 @@
+const Task = require('../schema/taskSchema')
+
+
+const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({})
+    return res.status(200).json(tasks)
+  } catch (err) {
+    return res.status(500).json({ message: "error fetching tasks", error: err })
+  }
+}
+
+
+const createTask = async (req, res) => {
+  try {
+    const task = await Task.create(req.body)
+
+    if (task) {
+      return res.status(201).json(task)
+    } else {
+      return res.status(400).json({ message: "Error creating task. A task needs a title, description, status, and date" })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Server error creating task", error: err })
+  }
+}
+
+const updateTask = async (req, res) => {
+  try {
+    const taskId = req.params.id
+
+    //returns document with new changes made
+    const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, { new: true })
+
+    if (updatedTask) {
+      return res.status(200).json(updatedTask)
+    } else {
+      return res.status(400).json({ message: "No task found with that id" })
+    }
+  } catch (err) {
+
+    console.error(err)
+    return res.status(500).json({ message: "Server error occured updating task", error: err.message })
+  }
+}
+
+module.exports = { getAllTasks, createTask, updateTask }
