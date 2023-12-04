@@ -4,7 +4,10 @@ const TaskSchema = new mongoose.Schema({
 
   title: String,
   description: String,
-  status: String, //Refactor to enum
+  status: {
+    type: String,
+    enum: ['Complete', 'Incomplete', 'Overdue']
+  }, //Refactor to enum
   due_date: Date
 })
 
