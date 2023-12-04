@@ -18,7 +18,7 @@ const createTask = async (req, res) => {
     if (task) {
       return res.status(201).json(task)
     } else {
-      return res.status(400).json({ message: "Error creating task. A task needs a title, description, status, and date" })
+      return res.status(404).json({ message: "Error creating task. A task needs a title, description, status, and date" })
     }
   } catch (err) {
     return res.status(500).json({ message: "Server error creating task", error: err })
@@ -35,7 +35,7 @@ const updateTask = async (req, res) => {
     if (updatedTask) {
       return res.status(200).json(updatedTask)
     } else {
-      return res.status(400).json({ message: "No task found with that id" })
+      return res.status(404).json({ message: "No task found with that id" })
     }
   } catch (err) {
 
@@ -44,4 +44,20 @@ const updateTask = async (req, res) => {
   }
 }
 
-module.exports = { getAllTasks, createTask, updateTask }
+const deleteTask = async (req, res) => {
+  try {
+    const taskId = req.params.id
+
+    const deletedTask = await Task.findByIdAndDelete(taskId)
+
+    if (deletedTask) {
+      return res.sendStatus(204)
+    } else {
+      return res.status(404).json({ message: "Error: No task found with that id" })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Server error deleting task", error: err.message })
+  }
+}
+
+module.exports = { getAllTasks, createTask, updateTask, deleteTask }
