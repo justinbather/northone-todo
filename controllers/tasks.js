@@ -13,7 +13,7 @@ const getAllTasks = async (req, res) => {
 const getOneTask = async (req, res) => {
   try {
     const taskId = req.params.id
-    const task = await Task.findById(taskId).populate('sub_tasks').populate('parent_task').exec()
+    const task = await Task.findById(taskId).populate('sub_tasks').populate('parent').exec()
     if (task) {
       return res.status(200).json(task)
     } else {
