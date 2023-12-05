@@ -8,6 +8,7 @@ const connectDB = require('./config/db')
 
 //Routes
 const taskRoutes = require('./routes/taskRoutes')
+const taskListRoutes = require('./routes/taskListRoutes')
 const app = express()
 
 connectDB()
@@ -26,6 +27,7 @@ app.use(cors({ origin: true, credentials: true }))
 //Auth: Login, signup, logout
 //Tasks: CRUD
 app.use('/tasks', taskRoutes)
+app.use('/tasklists', taskListRoutes)
 
 app.get('/', (_req, res) => {
   return res.status(200).json("hello world")
