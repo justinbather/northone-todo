@@ -17,6 +17,10 @@ const TaskSchema = new mongoose.Schema({
       default: () => ({}),
     }
   ],
+  parent_task: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Task"
+  }
 })
 
 

@@ -3,7 +3,7 @@ const Task = require('../schema/taskSchema')
 
 const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({})
+    const tasks = await Task.find({}).populate('sub_tasks').exec()
     return res.status(200).json(tasks)
   } catch (err) {
     return res.status(500).json({ message: "error fetching tasks", error: err })
@@ -13,7 +13,7 @@ const getAllTasks = async (req, res) => {
 const getOneTask = async (req, res) => {
   try {
     const taskId = req.params.id
-    const task = await Task.findById(taskId)
+    const task = await Task.findById(taskId).populate('sub_tasks').populate('parent_task').exec()
     if (task) {
       return res.status(200).json(task)
     } else {
