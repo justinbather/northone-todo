@@ -23,7 +23,6 @@ function populateTasks() {
           console.log("error inserting tasks: ", err)
         }).catch((err) => console.log("error deleted tasks: ", err))
     })
-
   } else {
     console.log("You cannot do this in production environment")
     process.exit(1)
