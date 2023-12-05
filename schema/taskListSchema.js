@@ -9,7 +9,7 @@ const TaskListSchema = new mongoose.Schema({
   description: String,
   tasks: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Tasks",
+    ref: "Task",
     default: () => ({})
   }],
   created_on: {
