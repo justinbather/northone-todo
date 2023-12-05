@@ -1,7 +1,7 @@
 const TaskList = require('../schema/taskListSchema')
 
 
-const getAllTaskLists = async (req, res) => {
+const getAllTaskLists = async (_req, res) => {
   try {
 
     const taskLists = await TaskList.find({})
@@ -16,4 +16,19 @@ const getAllTaskLists = async (req, res) => {
   }
 }
 
-module.exports = { getAllTaskLists }
+const createTaskList = async (req, res) => {
+  try {
+
+    const taskList = await TaskList.create(req.body)
+    if (taskList) {
+      return res.status(201).json(taskList)
+    } else {
+      return res.status(400).json({ message: "Error creating task list. Make sure all fields are in request body (title, description)" })
+    }
+  } catch (err) {
+
+    return res.status(500).json({ message: "Server error creating task list", error: err.message })
+  }
+}
+
+module.exports = { getAllTaskLists, createTaskList }

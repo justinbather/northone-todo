@@ -1,9 +1,10 @@
 const express = require('express')
 
-const { getAllTaskLists } = require('../controllers/taskLists')
+const { getAllTaskLists, createTaskList } = require('../controllers/taskLists')
 const router = express.Router()
 
 router.get('/', getAllTaskLists)
+router.post('/', createTaskList)
 
 
 module.exports = router
