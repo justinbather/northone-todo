@@ -10,11 +10,13 @@ const TaskSchema = new mongoose.Schema({
     default: 'Incomplete'
   }, //Refactor to enum
   due_date: Date,
-  sub_tasks: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Task",
-    default: () => ({}),
-  }
+  sub_tasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task",
+      default: () => ({}),
+    }
+  ],
 })
 
 
