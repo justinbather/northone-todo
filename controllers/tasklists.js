@@ -88,4 +88,22 @@ const deleteTaskList = async (req, res) => {
   }
 }
 
-module.exports = { getAllTaskLists, createTaskList, addTasks, getOneTaskList, deleteTaskList }
+const updateTaskList = async (req, res) => {
+  try {
+
+    const { taskListId } = req.params
+    const update = req.body
+
+    const updatedTaskList = await TaskList.findByIdAndUpdate(taskListId, update, { new: true })
+
+    if (!updatedTaskList) {
+      return res.status(500).json({ message: "Server Error updating task list" })
+    } else {
+      return res.status(200).json(updatedTaskList)
+    }
+  } catch (err) {
+    return res.status(404).json({ message: "Error: Couldn't find a task list with that id", })
+  }
+}
+
+module.exports = { getAllTaskLists, createTaskList, addTasks, getOneTaskList, deleteTaskList, updateTaskList }
