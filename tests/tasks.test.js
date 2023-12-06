@@ -107,7 +107,7 @@ describe("Task controller tests", () => {
   })
 
   describe("Delete created Task", () => {
-    it("Should return 204", async () => {
+    it("Should return 204, deleting the task given and any sub_tasks related", async () => {
       const response = await request(app)
         .delete(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
 
