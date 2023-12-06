@@ -81,9 +81,12 @@ const deleteTask = async (req, res) => {
   try {
     const taskId = req.params.taskId
 
-    let deletedTask = await Task.findById(taskId).populate('sub_tasks').exec()
-
+    let deletedTask = await Task.findById(taskId).populate('sub_tasks').populate('parent_task').exec()
+    if (deletedTask.parent_task) {
+      deletedTask.parent_task.sub_tasks.pull(deletedTask._id)
+    }
     if (deletedTask.sub_tasks.length > 0) {
+
       await Task.deleteMany({ parent_task: deletedTask._id })
     }
 
