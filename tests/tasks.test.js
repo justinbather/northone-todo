@@ -7,11 +7,31 @@ describe("Task controller tests", () => {
   let createdTask
   let taskList;
 
+  let jwtToken;
+
+  describe('Create User for Authentication', () => {
+    it('Should return 201 and a JWT Token in header', async () => {
+      const response = await request(app)
+        .post("/auth/signup")
+        .set("content-type", "application/json")
+        .send({
+          username: "test",
+          password: "123"
+        })
+
+      expect(response.status).toBe(201)
+      expect(response.headers['set-cookie']).toBeDefined()
+      jwtToken = response.headers['set-cookie']
+    })
+  })
+
+
   describe("Create Task list", () => {
     it("Should return 201 with task list for use in rest of suite", async () => {
       const response = await request(app)
         .post('/tasklists')
         .set("content-type", "application/json")
+        .set('Cookie', jwtToken)
         .send({
           title: "Test tasklist",
           description: "Test description"
@@ -35,6 +55,7 @@ describe("Task controller tests", () => {
       const response = await request(app)
         .post(`/tasklists/${taskList._id}/tasks`)
         .set("content-type", "application/json")
+        .set('Cookie', jwtToken)
         .send(task)
 
       createdTask = response.body
@@ -47,6 +68,7 @@ describe("Task controller tests", () => {
     it("Should return 200 with an array of 1 task", async () => {
       const response = await request(app)
         .get(`/tasklists/${taskList._id}/tasks`)
+        .set('Cookie', jwtToken)
 
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(1)
@@ -58,6 +80,7 @@ describe("Task controller tests", () => {
     it("Should return 200 with created task object", async () => {
       const response = await request(app)
         .get(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+        .set('Cookie', jwtToken)
 
       expect(response.status).toBe(200)
       expect(response.body.title).toBe(createdTask.title)
@@ -69,6 +92,7 @@ describe("Task controller tests", () => {
       const response = await request(app)
         .patch(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
         .set("content-type", "application/json")
+        .set('Cookie', jwtToken)
         .send({
           status: "Complete"
         })
@@ -88,6 +112,7 @@ describe("Task controller tests", () => {
       const response = await request(app)
         .post(`/tasklists/${taskList._id}/tasks/${createdTask._id}/subtasks`)
         .set("content-type", "application/json")
+        .set('Cookie', jwtToken)
         .send(subTask)
 
       expect(response.status).toBe(201)
@@ -99,8 +124,8 @@ describe("Task controller tests", () => {
     it("Should return 200 with the task and its array of subtasks should have a length of 1", async () => {
       const response = await request(app)
         .get(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+        .set('Cookie', jwtToken)
 
-      console.log(response.body)
       expect(response.status).toBe(200)
       expect(response.body.sub_tasks.length).toBe(1)
     })
@@ -110,6 +135,7 @@ describe("Task controller tests", () => {
     it("Should return 204, deleting the task given and any sub_tasks related", async () => {
       const response = await request(app)
         .delete(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+        .set('Cookie', jwtToken)
 
       expect(response.status).toBe(204)
     })
@@ -119,6 +145,7 @@ describe("Task controller tests", () => {
     it("Should return 200 with a length of 0", async () => {
       const response = await request(app)
         .get(`/tasklists/${taskList._id}/tasks`)
+        .set('Cookie', jwtToken)
 
       expect(response.status).toBe(200)
       expect(response.body.length).toBe(0)

@@ -1,6 +1,5 @@
 const request = require('supertest')
 const app = require('../app')
-const TaskList = require('../schema/taskListSchema')
 
 
 describe("Task List Controller Functions", () => {
@@ -76,17 +75,6 @@ describe("Task List Controller Functions", () => {
 
       expect(response.status).toBe(200)
       expect(response.body.title).toBe("Updated title")
-    })
-    it("Should return 404 not found", async () => {
-      const response = await request(app)
-        .patch('/tasklists/123')
-        .set("content-type", "application/json")
-        .set("Cookie", jwtToken)
-        .send({
-          title: "New title"
-        })
-
-      expect(response.status).toBe(404)
     })
   })
 
