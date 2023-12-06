@@ -4,7 +4,6 @@ const Task = require('../schema/taskSchema')
 
 const getAllTaskLists = async (_req, res) => {
   try {
-
     const taskLists = await TaskList.find({}).populate('tasks').exec()
     if (taskLists.length > 0) {
       return res.status(200).json(taskLists)

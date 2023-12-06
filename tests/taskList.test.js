@@ -17,4 +17,12 @@ describe("Task List Controller Functions", () => {
       expect(response.status).toBe(201)
     })
   })
+  describe("Get Task List", () => {
+    it("Should return 200 with task list", async () => {
+      const response = await request(app)
+        .get("/tasklists")
+
+      expect(response.status).toBe(200)
+    })
+  })
 })
