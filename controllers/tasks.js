@@ -73,8 +73,6 @@ const updateTask = async (req, res) => {
       return res.status(404).json({ message: "No task found with that id" })
     }
   } catch (err) {
-
-    console.error(err)
     return res.status(500).json({ message: "Server error occured updating task", error: err.message })
   }
 }
@@ -83,8 +81,13 @@ const deleteTask = async (req, res) => {
   try {
     const taskId = req.params.taskId
 
-    const deletedTask = await Task.findByIdAndDelete(taskId)
+    let deletedTask = await Task.findById(taskId).populate('sub_tasks').exec()
 
+    if (deletedTask.sub_tasks.length > 0) {
+      await Task.deleteMany({ parent_task: deletedTask._id })
+    }
+
+    deletedTask = await Task.deleteOne({ _id: deletedTask._id })
     if (deletedTask) {
       return res.sendStatus(204)
     } else {

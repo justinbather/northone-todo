@@ -63,4 +63,65 @@ describe("Task controller tests", () => {
       expect(response.body.title).toBe(createdTask.title)
     })
   })
+
+  describe("Update task to completed", () => {
+    it("should return 200 with a completed status", async () => {
+      const response = await request(app)
+        .patch(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+        .set("content-type", "application/json")
+        .send({
+          status: "Complete"
+        })
+
+      expect(response.status).toBe(200)
+      expect(response.body.status).toBe("Complete")
+    })
+  })
+
+  describe("Add subtask to created task", () => {
+    it("Should return 201 with the new task and have the correct parent task", async () => {
+      const subTask = {
+        title: "Test Subtask",
+        description: "Subtask description",
+        due_date: Date.now()
+      }
+      const response = await request(app)
+        .post(`/tasklists/${taskList._id}/tasks/${createdTask._id}/subtasks`)
+        .set("content-type", "application/json")
+        .send(subTask)
+
+      expect(response.status).toBe(201)
+      expect(response.body.parent_task).toBe(createdTask._id)
+    })
+  })
+
+  describe("Check tasks subtasks", () => {
+    it("Should return 200 with the task and its array of subtasks should have a length of 1", async () => {
+      const response = await request(app)
+        .get(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+
+      console.log(response.body)
+      expect(response.status).toBe(200)
+      expect(response.body.sub_tasks.length).toBe(1)
+    })
+  })
+
+  describe("Delete created Task", () => {
+    it("Should return 204", async () => {
+      const response = await request(app)
+        .delete(`/tasklists/${taskList._id}/tasks/${createdTask._id}`)
+
+      expect(response.status).toBe(204)
+    })
+  })
+
+  describe("Get all tasks after deletion", () => {
+    it("Should return 200 with a length of 0", async () => {
+      const response = await request(app)
+        .get(`/tasklists/${taskList._id}/tasks`)
+
+      expect(response.status).toBe(200)
+      expect(response.body.length).toBe(0)
+    })
+  })
 })
