@@ -1,15 +1,15 @@
 const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-
-//config
 const connectDB = require('./config/db')
 
+
+//config
+connectDB()
 //Routes
 const taskListRoutes = require('./routes/taskListRoutes')
 const app = express()
 
-connectDB()
 
 
 // Middlewares
