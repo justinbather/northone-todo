@@ -2,6 +2,7 @@ const connectDB = require('../config/db')
 const fs = require('fs')
 const Task = require('../schema/taskSchema')
 const TaskList = require('../schema/taskListSchema')
+const User = require('../schema/userSchema')
 require('dotenv').config()
 
 /*
@@ -16,7 +17,8 @@ async function populateDb() {
 
   if (process.env.NODE_ENV !== 'production') {
 
-    const taskList = await createTaskList()
+    const user = await createUser()
+    const taskList = await createTaskList(user._id)
     const tasks = await populateTasks(taskList._id)
 
     tasks.forEach(async (task) => {
@@ -34,12 +36,25 @@ async function populateDb() {
   }
 }
 
-async function createTaskList() {
+async function createUser() {
+  try {
+    await User.deleteMany({})
+    const user = await User.create({ username: "mock", password: "123" })
+
+    return user
+  } catch (err) {
+    console.log('error creating user: ', err)
+  }
+}
+
+async function createTaskList(userId) {
   try {
     await TaskList.deleteMany({})
     const taskListData = {
       title: "Mock task list",
-      description: "My Task list"
+      description: "My Task list",
+      public: true,
+      creator: userId
     }
     const taskList = await TaskList.create(taskListData)
 
