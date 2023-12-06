@@ -30,7 +30,6 @@ describe("Task List Controller Functions", () => {
 
       expect(response.status).toBe(200)
       expect(response.body.length).not.toBe(0)
-      console.log(response.body)
     })
   })
 
