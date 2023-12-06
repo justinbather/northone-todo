@@ -12,6 +12,14 @@ const TaskListSchema = new mongoose.Schema({
     ref: "Task",
     default: () => ({})
   }],
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  public: {
+    type: Boolean,
+    default: true
+  },
   created_on: {
     type: Date,
     default: Date.now
