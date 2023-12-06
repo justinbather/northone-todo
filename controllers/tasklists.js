@@ -21,11 +21,11 @@ const getOneTaskList = async (req, res) => {
     const { taskListId } = req.params
     const taskList = await TaskList.findOne({ _id: taskListId }).populate('tasks').populate('creator')
 
-    if (taskList.creator._id === req.user || taskList.public) {
+    if (taskList.creator._id.equals(req.user) || taskList.public) {
 
       return res.status(200).json(taskList)
     } else {
-      return res.status(404).json({ message: "Error: You don't have access to that tasklist" })
+      return res.status(403).json({ message: "Error: You don't have access to that tasklist" })
     }
   } catch (err) {
     console.log(err)
@@ -35,10 +35,11 @@ const getOneTaskList = async (req, res) => {
 
 const createTaskList = async (req, res) => {
   try {
-
     const taskList = await TaskList.create(req.body)
+
     taskList.creator = req.user
     await taskList.save({ new: true })
+
     if (taskList) {
       return res.status(201).json(taskList)
     } else {
@@ -52,7 +53,6 @@ const createTaskList = async (req, res) => {
 
 const addTasks = async (req, res) => {
   try {
-
     const taskIds = req.query.add.split(' ')
     const taskListId = req.params.id
 
