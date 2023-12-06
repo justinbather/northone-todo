@@ -11,7 +11,7 @@ const TaskSchema = new mongoose.Schema({
   },
   importance: {
     type: String,
-    enum: ['Not Important', 'Slightly Important', 'Important', 'Very Important', 'Critical']
+    enum: ['Not Important', 'Slightly Important', 'Important', 'Very Important', 'Critical'],
     default: 'Important'
   },
   due_date: Date,
