@@ -21,6 +21,7 @@ describe('Test Task List permissions', () => {
   let privTaskList;
 
   describe('Create 2 users', () => {
+
     it('Should return 201 with JWT token', async () => {
 
       const response = await request(app)
@@ -33,6 +34,7 @@ describe('Test Task List permissions', () => {
 
       user1Jwt = response.headers['set-cookie']
     })
+
     it('Should return 201 with JWT token', async () => {
 
       const response = await request(app)
@@ -46,8 +48,8 @@ describe('Test Task List permissions', () => {
     })
   })
 
-
   describe('Create A Private Task List', () => {
+
     it('Should return 201 with taskList', async () => {
 
       const response = await request(app)
@@ -61,11 +63,11 @@ describe('Test Task List permissions', () => {
         })
 
       privTaskList = response.body
-      console.log(privTaskList)
       expect(response.status).toBe(201)
     })
 
-    describe('Get Private Tasklist', () => {
+    describe('Test tasklist permissions', () => {
+
       it('Should return a 403, no authorization', async () => {
 
         const response = await request(app)
@@ -74,20 +76,16 @@ describe('Test Task List permissions', () => {
 
 
         expect(response.status).toBe(403)
-
       })
+
       it('Should return 200 ', async () => {
 
         const response = await request(app)
           .get(`/tasklists/${privTaskList._id}`)
           .set('Cookie', user1Jwt)
 
-
         expect(response.status).toBe(200)
       })
-
     })
-
   })
-
 })
