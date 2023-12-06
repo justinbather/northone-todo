@@ -1,6 +1,7 @@
 const connectDB = require('../config/db')
 const fs = require('fs')
 const Task = require('../schema/taskSchema')
+const TaskList = require('../schema/taskListSchema')
 require('dotenv').config()
 
 /*
@@ -10,41 +11,57 @@ require('dotenv').config()
   * Note: Will not run in production
 */
 
-function populateTasks() {
-
+async function populateDb() {
   connectDB()
 
   if (process.env.NODE_ENV !== 'production') {
-    deleteTasks().then((res) => {
-      console.log("deleted tasks successfully")
-      insertTasks()
-        .then((res) => console.log("inserted tasks successfully"))
-        .catch((err) => {
-          console.log("error inserting tasks: ", err)
-        }).catch((err) => console.log("error deleted tasks: ", err))
+
+    const taskList = await createTaskList()
+    const tasks = await populateTasks(taskList._id)
+
+    tasks.forEach(async (task) => {
+      task.task_list = taskList._id
+      await task.save()
     })
+
+    taskList.tasks.push(...tasks)
+    await taskList.save()
   } else {
     console.log("You cannot do this in production environment")
     process.exit(1)
   }
 }
 
-async function insertTasks() {
+async function createTaskList() {
+  try {
+    const deletedLists = await TaskList.deleteMany({})
+    const taskListData = {
+      title: "Mock task list",
+      description: "My Task list"
+    }
 
-  //Reads seed data into a buffer
-  const data = fs.readFileSync('./seeds/tasks.json')
+    const taskList = await TaskList.create(taskListData)
 
-  const tasks = await Task.insertMany(JSON.parse(data))
+    return taskList
+  } catch (err) {
+    console.log("error in createTaskList", err)
+  }
 
-  return tasks
 }
 
-async function deleteTasks() {
+async function populateTasks(taskListId) {
 
-  // Wipe current tasks
-  const deletedTasks = await Task.deleteMany({})
+  try {
+    const deletedTasks = await Task.deleteMany({})
+    //Reads seed data into a buffer
+    const data = fs.readFileSync('./seeds/tasks.json')
 
-  return deletedTasks
+
+    const tasks = await Tasks.insertMany(JSON.parse(data))
+    return tasks
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-populateTasks()
+populateDb()

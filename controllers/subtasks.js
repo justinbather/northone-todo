@@ -2,7 +2,7 @@ const Task = require('../schema/taskSchema')
 
 const createSubtask = async (req, res) => {
   try {
-    const parentTaskId = req.params.id
+    const parentTaskId = req.params.taskId
 
     const parentTask = await Task.findById(parentTaskId)
 
@@ -19,7 +19,7 @@ const createSubtask = async (req, res) => {
     subTask.parent_task = parentTask._id
     parentTask.sub_tasks.push(subTask._id)
     const savedSubtask = await subTask.save()
-    const savedParentTask = await parentTask.save()
+    await parentTask.save()
     return res.status(201).json(savedSubtask)
   } catch (err) {
     return res.status(500).json({ message: "Server error creating subtask", error: err.message })

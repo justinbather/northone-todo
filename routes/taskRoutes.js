@@ -3,15 +3,16 @@ const { getAllTasks, createTask, updateTask, deleteTask, getOneTask } = require(
 const { createSubtask } = require('../controllers/subtasks')
 
 
-router = express.Router()
+//mergeParams to have access to parent url params
+router = express.Router({ mergeParams: true })
 
 
 router.get('/', getAllTasks)
-router.get('/:id', getOneTask)
+router.get('/:taskId', getOneTask)
 router.post('/', createTask)
-router.patch('/:id', updateTask)
-router.delete('/:id', deleteTask)
+router.patch('/:taskId', updateTask)
+router.delete('/:taskId', deleteTask)
 //Sub tasks
-router.post('/:id/subtasks', createSubtask)
+router.post('/:taskId/subtasks', createSubtask)
 
 module.exports = router

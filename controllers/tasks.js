@@ -1,9 +1,11 @@
 const Task = require('../schema/taskSchema')
+const TaskList = require('../schema/taskListSchema')
 
 
 const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({}).populate('sub_tasks').exec()
+    const taskListId = req.params.taskListId
+    const tasks = await Task.find({ task_list: taskListId }).populate('sub_tasks').exec()
     return res.status(200).json(tasks)
   } catch (err) {
     return res.status(500).json({ message: "error fetching tasks", error: err })
@@ -12,8 +14,9 @@ const getAllTasks = async (req, res) => {
 
 const getOneTask = async (req, res) => {
   try {
-    const taskId = req.params.id
+    const taskId = req.params.taskId
     const task = await Task.findById(taskId).populate('sub_tasks').populate('parent').exec()
+
     if (task) {
       return res.status(200).json(task)
     } else {
@@ -26,10 +29,28 @@ const getOneTask = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const task = await Task.create(req.body)
+    const taskListId = req.params.taskListId
 
-    if (task) {
-      return res.status(201).json(task)
+    if (!taskListId) {
+      return res.status(404).json({ message: "Error: You must provide a valid task list" })
+    }
+
+    const taskList = await TaskList.findById(taskListId)
+    if (!taskList) {
+      return res.status(404).json({ message: "Error: No task list found with that id" })
+    }
+
+    //Create task and set tasklist
+    const task = await Task.create(req.body)
+    task.task_list = taskList._id
+    const savedTask = await task.save()
+
+    //Add task to task_list array and save
+    taskList.tasks.push(task._id)
+    await taskList.save()
+
+    if (savedTask) {
+      return res.status(201).json(savedTask)
     } else {
       return res.status(404).json({ message: "Error creating task. A task needs a title, description, status, and date" })
     }
@@ -40,7 +61,7 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    const taskId = req.params.id
+    const taskId = req.params.taskId
 
     //returns document with new changes made
     const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, { new: true })
@@ -59,7 +80,7 @@ const updateTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
   try {
-    const taskId = req.params.id
+    const taskId = req.params.taskId
 
     const deletedTask = await Task.findByIdAndDelete(taskId)
 

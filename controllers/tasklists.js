@@ -17,6 +17,20 @@ const getAllTaskLists = async (_req, res) => {
   }
 }
 
+const getOneTaskList = async (req, res) => {
+  try {
+    const { taskListId } = req.params
+    const taskList = await TaskList.findById(taskListId).populate('tasks')
+    if (taskList) {
+      return res.status(200).json(taskList)
+    } else {
+      return res.status(404).json({ message: "Error: no task list found with that id" })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Server error in getOneTaskList", error: err.message })
+  }
+}
+
 const createTaskList = async (req, res) => {
   try {
 
@@ -60,4 +74,4 @@ const addTasks = async (req, res) => {
   }
 }
 
-module.exports = { getAllTaskLists, createTaskList, addTasks }
+module.exports = { getAllTaskLists, createTaskList, addTasks, getOneTaskList }

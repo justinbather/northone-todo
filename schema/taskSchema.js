@@ -20,6 +20,10 @@ const TaskSchema = new mongoose.Schema({
   parent_task: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Task"
+  },
+  task_list: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Task List",
   }
 })
 

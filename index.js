@@ -26,7 +26,6 @@ app.use(cors({ origin: true, credentials: true }))
 //Routes
 //Auth: Login, signup, logout
 //Tasks: CRUD
-app.use('/tasks', taskRoutes)
 app.use('/tasklists', taskListRoutes)
 
 app.get('/', (_req, res) => {
