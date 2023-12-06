@@ -2,9 +2,9 @@ const TaskList = require('../schema/taskListSchema')
 const Task = require('../schema/taskSchema')
 
 
-const getAllTaskLists = async (_req, res) => {
+const getAllTaskLists = async (req, res) => {
   try {
-    const taskLists = await TaskList.find({}).populate('tasks').exec()
+    const taskLists = await TaskList.find({ $or: [{ public: true }, { creator: req.user }] }).populate('tasks').exec()
     if (taskLists.length > 0) {
       return res.status(200).json(taskLists)
     } else {
@@ -19,13 +19,16 @@ const getAllTaskLists = async (_req, res) => {
 const getOneTaskList = async (req, res) => {
   try {
     const { taskListId } = req.params
-    const taskList = await TaskList.findById(taskListId).populate('tasks')
-    if (taskList) {
+    const taskList = await TaskList.findOne({ _id: taskListId }).populate('tasks').populate('creator')
+
+    if (taskList.creator._id === req.user || taskList.public) {
+
       return res.status(200).json(taskList)
     } else {
-      return res.status(404).json({ message: "Error: no task list found with that id" })
+      return res.status(404).json({ message: "Error: You don't have access to that tasklist" })
     }
   } catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Server error in getOneTaskList", error: err.message })
   }
 }
@@ -34,6 +37,8 @@ const createTaskList = async (req, res) => {
   try {
 
     const taskList = await TaskList.create(req.body)
+    taskList.creator = req.user
+    await taskList.save({ new: true })
     if (taskList) {
       return res.status(201).json(taskList)
     } else {
@@ -76,12 +81,12 @@ const addTasks = async (req, res) => {
 const deleteTaskList = async (req, res) => {
   try {
     const { taskListId } = req.params
-    const deletedTaskList = await TaskList.findByIdAndDelete(taskListId)
+    const deletedTaskList = await TaskList.findOneAndDelete({ _id: taskListId, creator: req.user })
     if (deletedTaskList) {
       await Task.deleteMany({ task_list: taskListId })
       return res.sendStatus(204)
     } else {
-      return res.status(404).json({ message: "Error deleting tasklist" })
+      return res.status(403).json({ message: "Error deleting tasklist: You don't own this tasklist" })
     }
   } catch (err) {
     return res.status(500).json({ message: "Server error deleting task list", error: err.message })
@@ -94,7 +99,7 @@ const updateTaskList = async (req, res) => {
     const { taskListId } = req.params
     const update = req.body
 
-    const updatedTaskList = await TaskList.findByIdAndUpdate(taskListId, update, { new: true })
+    const updatedTaskList = await TaskList.findOneAndUpdate({ _id: taskListId, creator: req.user }, update, { new: true })
 
     if (!updatedTaskList) {
       return res.status(500).json({ message: "Server Error updating task list" })
@@ -102,7 +107,7 @@ const updateTaskList = async (req, res) => {
       return res.status(200).json(updatedTaskList)
     }
   } catch (err) {
-    return res.status(404).json({ message: "Error: Couldn't find a task list with that id", })
+    return res.status(404).json({ message: "Error: Couldn't find a task list with that id that you own", })
   }
 }
 
