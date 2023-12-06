@@ -8,7 +8,12 @@ const TaskSchema = new mongoose.Schema({
     type: String,
     enum: ['Complete', 'Incomplete', 'Overdue'],
     default: 'Incomplete'
-  }, //Refactor to enum
+  },
+  importance: {
+    type: String,
+    enum: ['Not Important', 'Slightly Important', 'Important', 'Very Important', 'Critical']
+    default: 'Important'
+  },
   due_date: Date,
   sub_tasks: [
     {
