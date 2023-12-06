@@ -73,4 +73,19 @@ const addTasks = async (req, res) => {
   }
 }
 
-module.exports = { getAllTaskLists, createTaskList, addTasks, getOneTaskList }
+const deleteTaskList = async (req, res) => {
+  try {
+    const { taskListId } = req.params
+    const deletedTaskList = await TaskList.findByIdAndDelete(taskListId)
+    if (deletedTaskList) {
+      await Task.deleteMany({ task_list: taskListId })
+      return res.sendStatus(204)
+    } else {
+      return res.status(404).json({ message: "Error deleting tasklist" })
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Server error deleting task list", error: err.message })
+  }
+}
+
+module.exports = { getAllTaskLists, createTaskList, addTasks, getOneTaskList, deleteTaskList }

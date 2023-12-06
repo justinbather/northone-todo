@@ -19,7 +19,7 @@ describe("Task List Controller Functions", () => {
       taskList = response.body
     })
   })
-  describe("Get Task List", () => {
+  describe("Get All Task Lists", () => {
     it("Should return 200 with task list", async () => {
       const response = await request(app)
         .get("/tasklists")
@@ -34,6 +34,15 @@ describe("Task List Controller Functions", () => {
         .get(`/tasklists/${taskList._id}`)
 
       expect(response.status).toBe(200)
+    })
+  })
+
+  describe("Delete task list", () => {
+    it("Should return a 204 no content", async () => {
+      const response = await request(app)
+        .delete(`/tasklists/${taskList._id}`)
+
+      expect(response.status).toBe(204)
     })
   })
 })
