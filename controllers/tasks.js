@@ -5,17 +5,17 @@ const TaskList = require('../schema/taskListSchema')
 const getAllTasks = async (req, res) => {
   try {
 
-    //Sorting and filtering options
-    //If undefined, Mongo ignores
+    //Query params for query filter building
     const sortBy = req.query.sort_by
     const status = req.query.status
     const importance = req.query.importance
-
+    const searchTerm = req.query.search
 
     const taskListId = req.params.taskListId
 
     const queryFilter = { task_list: taskListId }
 
+    // Build query filter, adding only defined values from above
     if (status !== undefined) {
       queryFilter.status = status
     }
@@ -23,10 +23,21 @@ const getAllTasks = async (req, res) => {
     if (importance !== undefined) {
       queryFilter.importance = importance
     }
-    const tasks = await Task.find(queryFilter).sort(sortBy).populate('sub_tasks').exec()
 
+    let tasks;
+
+    if (searchTerm) {
+      const searchRegex = new RegExp(searchTerm)
+      const tasks = await Task.find({ ...queryFilter, title: { $regex: searchRegex, $options: 'i' } }).populate('sub_tasks').exec()
+      return res.status(200).json(tasks)
+
+    } else {
+
+      tasks = await Task.find(queryFilter).sort(sortBy).populate('sub_tasks').exec()
+    }
 
     return res.status(200).json(tasks)
+
   } catch (err) {
     return res.status(500).json({ message: "error fetching tasks", error: err })
   }
@@ -121,4 +132,4 @@ const deleteTask = async (req, res) => {
   }
 }
 
-module.exports = { getAllTasks, createTask, updateTask, deleteTask, getOneTask }
+module.exports = { getAllTasks, createTask, updateTask, deleteTask, getOneTask, }

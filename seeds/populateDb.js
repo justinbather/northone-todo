@@ -39,7 +39,7 @@ async function populateDb() {
 async function createUser() {
   try {
     await User.deleteMany({})
-    const user = await User.create({ username: "mock", password: "123" })
+    const user = await User.create({ username: "test", password: "123" })
 
     return user
   } catch (err) {
