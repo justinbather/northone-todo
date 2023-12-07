@@ -4,9 +4,28 @@ const TaskList = require('../schema/taskListSchema')
 
 const getAllTasks = async (req, res) => {
   try {
-    const sortBy = req.params.sort_by
+
+    //Sorting and filtering options
+    //If undefined, Mongo ignores
+    const sortBy = req.query.sort_by
+    const status = req.query.status
+    const importance = req.query.importance
+
+
     const taskListId = req.params.taskListId
-    const tasks = await Task.find({ task_list: taskListId }).sort(sortBy).populate('sub_tasks').exec()
+
+    const queryFilter = { task_list: taskListId }
+
+    if (status !== undefined) {
+      queryFilter.status = status
+    }
+
+    if (importance !== undefined) {
+      queryFilter.importance = importance
+    }
+    const tasks = await Task.find(queryFilter).sort(sortBy).populate('sub_tasks').exec()
+
+
     return res.status(200).json(tasks)
   } catch (err) {
     return res.status(500).json({ message: "error fetching tasks", error: err })
