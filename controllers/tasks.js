@@ -4,8 +4,9 @@ const TaskList = require('../schema/taskListSchema')
 
 const getAllTasks = async (req, res) => {
   try {
+    const sortBy = req.params.sort_by
     const taskListId = req.params.taskListId
-    const tasks = await Task.find({ task_list: taskListId }).populate('sub_tasks').exec()
+    const tasks = await Task.find({ task_list: taskListId }).sort(sortBy).populate('sub_tasks').exec()
     return res.status(200).json(tasks)
   } catch (err) {
     return res.status(500).json({ message: "error fetching tasks", error: err })

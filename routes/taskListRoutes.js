@@ -7,8 +7,8 @@ const checkIsCreator = require('../middleware/checkIsCreator.js')
 
 const router = express.Router()
 
-router.get('/', getAllTaskLists)
-router.get('/:taskListId', getOneTaskList)
+router.get('/', authenticateUser, getAllTaskLists)
+router.get('/:taskListId', authenticateUser, getOneTaskList)
 router.post('/', authenticateUser, createTaskList)
 router.delete('/:taskListId', authenticateUser, checkIsCreator, deleteTaskList)
 router.patch('/:taskListId', authenticateUser, checkIsCreator, updateTaskList)

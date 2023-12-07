@@ -59,7 +59,6 @@ describe('Test Task List permissions', () => {
           public: false
         })
 
-      console.log(response.body)
       privTaskList = response.body
       expect(response.status).toBe(201)
     })

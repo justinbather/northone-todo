@@ -2,6 +2,7 @@ const express = require('express')
 const { getAllTasks, createTask, updateTask, deleteTask, getOneTask } = require('../controllers/tasks')
 const { createSubtask } = require('../controllers/subtasks')
 const checkIsCreator = require('../middleware/checkIsCreator')
+const authenticateUser = require('../middleware/authenticateUser')
 
 
 //mergeParams to have access to parent url params
