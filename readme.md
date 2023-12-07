@@ -5,7 +5,7 @@ A todo list backend built in Node with MongoDB and Express, features user authen
 
 ## Endpoints
 
-### authentication
+### Authentication
 ```http
 POST /auth/signup
 ```
@@ -41,3 +41,17 @@ Logs user out by removing the JWT cookie from header, returns 200 on success
 ```
 
 
+### Tasklists
+
+Requires user to be logged in
+Task list properties
+```javascript
+{
+  title: String,
+  description: String,
+  tasks: []Tasks,
+  creator: User,
+  public: Boolean,
+  created_on: Date
+}
+```
