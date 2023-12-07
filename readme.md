@@ -147,7 +147,7 @@ Response
   "public": true,
   "tasks": [],
   "creator": "ObjectId(23124148)", //User id
-  "created_on": 2023-12-08 
+  "created_on": "2024-01-01"
 }
 ```
 
@@ -172,7 +172,7 @@ Response:
     "public": true,
     "tasks": [],
     "creator": "ObjectId(23124148)", //User id
-    "created_on": 2023-12-08 
+    "created_on": "2024-01-01"
   },
 
 ]
@@ -198,7 +198,7 @@ Response
   "public": true,
   "tasks": [],
   "creator": "ObjectId(23124148)", //User id
-  "created_on": 2023-12-08 
+  "created_on": "2024-01-01" 
 }
 ```
 
@@ -228,7 +228,7 @@ Response
   "public": true,
   "tasks": [],
   "creator": "ObjectId(23124148)", //User id
-  "created_on": 2023-12-08 
+  "created_on": "2024-01-01" 
 }
 ```
 
@@ -286,7 +286,7 @@ POST /tasklists/:taskListId/tasks
   "description": "my test task",
   "status": "Incomplete",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
 ```
 
@@ -303,7 +303,7 @@ Response
   "sub_tasks": [],
   "task_list": "objectId(123445)",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
 ```
 
@@ -322,9 +322,9 @@ POST /tasklists/:taskListId/tasks/123/subtasks
   "sub_tasks": [],
   "task_list": "objectId(123445)",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
-
+```
 Response
 ```http
 201 CREATED
@@ -339,7 +339,7 @@ Response
   "task_list": "objectId(123445)",
   "parent_task": "objectId(123)", //This now references the task we gave in the url params
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
 ```
 
@@ -393,11 +393,11 @@ Response
       "task_list": "objectId(123445)",
       "parent_task": "objectId(123)", 
       "importance": "Urgent",
-      "due_date" : 2024-01-01
+      "due_date" : "2024-01-01"
     }],
   "task_list": "objectId(123445)",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 },
 { 
   "_id": "objectId(999)",
@@ -408,7 +408,7 @@ Response
   "task_list": "objectId(123445)",
   "parent_task": "objectId(123)", 
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
   
 }]
 ```
@@ -440,11 +440,11 @@ Response
       "task_list": "objectId(123445)",
       "parent_task": "objectId(123)", 
       "importance": "Urgent",
-      "due_date" : 2024-01-01
+      "due_date" : "2024-01-01"
     }],
   "task_list": "objectId(123445)",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
 ```
 
@@ -482,11 +482,11 @@ Response
       "task_list": "objectId(123445)",
       "parent_task": "objectId(123)", 
       "importance": "Urgent",
-      "due_date" : 2024-01-01
+      "due_date" : "2024-01-01"
     }],
   "task_list": "objectId(123445)",
   "importance": "Urgent",
-  "due_date" : 2024-01-01
+  "due_date" : "2024-01-01"
 }
 ```
 
