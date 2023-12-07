@@ -373,7 +373,7 @@ Filter options:
 
 ```http
 GET /tasklists/:taskListId/tasks?search=foobar&sort_by=status&importance=Important
-
+```
 Response
 ```http
 200 OK
